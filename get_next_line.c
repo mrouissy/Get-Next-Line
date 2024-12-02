@@ -80,6 +80,8 @@ char *get_next_line(int fd)
 	char		*line = NULL;
 	char		*new_line_pos;
 
+	if (fd == -1 || BUFFER_SIZE <= 0)
+		return (NULL);
 	buffer = ft_read_line(fd, buffer);
 	if (!buffer)
 		return (NULL);
