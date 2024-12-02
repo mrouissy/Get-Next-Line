@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mrouissy <mrouissy@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/02 10:30:52 by mrouissy          #+#    #+#             */
-/*   Updated: 2024/12/02 11:38:11 by mrouissy         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "get_next_line.h"
 
 static char	*free_and_return(char **ptr)
@@ -21,10 +9,9 @@ static char	*free_and_return(char **ptr)
 	}
 	return (NULL);
 }
-
 static char	*ft_new_line(char *str)
 {
-	int	i;
+	int i;
 
 	i = 0;
 	if (!str)
@@ -66,7 +53,8 @@ static char	*ft_read_line(int fd, char *buffer)
 	return (buffer);
 }
 
-char	*gget_line(char **buffer, char *new)
+
+char *gget_line(char **buffer, char *new)
 {
 	char	*temp;
 	char	*new_buffer;
@@ -86,10 +74,10 @@ char	*gget_line(char **buffer, char *new)
 	return (temp);
 }
 
-char	*get_next_line(int fd)
+char *get_next_line(int fd)
 {
-	static char	*buffer;
-	char		*line;
+	static char	*buffer = NULL;
+	char		*line = NULL;
 	char		*new_line_pos;
 
 	buffer = ft_read_line(fd, buffer);
@@ -97,7 +85,9 @@ char	*get_next_line(int fd)
 		return (NULL);
 	new_line_pos = ft_new_line(buffer);
 	if (new_line_pos)
+	{
 		line = gget_line(&buffer, new_line_pos);
+	}
 	else
 	{
 		line = ft_strdup(buffer);
@@ -106,22 +96,4 @@ char	*get_next_line(int fd)
 	if (!line || line[0] == '\0')
 		return (free_and_return(&line));
 	return (line);
-}
-#include <fcntl.h>
-#include <stdio.h>
-int main()
-{
-    int fd;
-    char *line;
-
-    fd = open("test2.txt", O_RDONLY);
-    line = get_next_line(fd);
-    while (line)
-    {
-        printf("%s", line);
-        free(line);
-        line = get_next_line(fd);
-    }
-    close(fd);
-    return (0);
 }
