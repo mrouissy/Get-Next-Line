@@ -28,20 +28,18 @@ static char	*ft_new_line(char *str)
 static char	*ft_read_line(int fd, char *buffer)
 {
 	char	*temp_buffer;
-	int	bytes_read;
+	ssize_t	bytes_read;
 
-	temp_buffer = malloc(BUFFER_SIZE + 1);
+	if (fd == -1 || BUFFER_SIZE <= 0)
+		return (NULL);
+	temp_buffer = malloc((unsigned long)BUFFER_SIZE + 1);
 	if (!temp_buffer)
 		return (NULL);
 	while (!buffer || !ft_new_line(buffer))
 	{
 		bytes_read = read(fd, temp_buffer, BUFFER_SIZE);
 		if (bytes_read == -1)
-		{
-			free_and_return(&temp_buffer);
-			free_and_return(&buffer);
-			return (NULL);
-		}
+			return( free_and_return(&temp_buffer), free_and_return(&buffer), NULL);
 		if (bytes_read == 0)
 			break ;
 		temp_buffer[bytes_read] = '\0';
@@ -80,8 +78,6 @@ char *get_next_line(int fd)
 	char		*line = NULL;
 	char		*new_line_pos;
 
-	if (fd == -1 || BUFFER_SIZE <= 0)
-		return (NULL);
 	buffer = ft_read_line(fd, buffer);
 	if (!buffer)
 		return (NULL);
@@ -99,3 +95,17 @@ char *get_next_line(int fd)
 		return (free_and_return(&line));
 	return (line);
 }
+
+// #include <fcntl.h>
+// #include <stdio.h>
+// int main()
+// {
+// 	int fd = open("test.txt",O_RDONLY);
+// 	printf("line 1:%s\n\n",get_next_line(fd));
+// 	printf("line 2:%s\n\n",get_next_line(fd));
+// 	printf("line 3:%s\n\n",get_next_line(fd));
+// 	printf("line 4:%s\n\n",get_next_line(fd));
+// 	printf("line 5:%s\n\n",get_next_line(fd));
+// 	printf("line 6:%s\n\n",get_next_line(fd));
+// }
+
